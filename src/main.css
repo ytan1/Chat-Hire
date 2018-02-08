@@ -1,0 +1,36 @@
+#register{
+	margin-top: 10vw;
+}
+
+.constainer{
+	width: 100%;
+	height: 100%;
+}
+
+.header1{
+	width: 100%;
+	height: 60px;
+	
+	background-color: skyblue;
+	font-weight: 500;
+	font-size: 30px;
+	color: white;
+	text-align: center;
+	line-height: 60px;
+	position: fixed;
+	top:0;
+
+	z-index: 11;
+}
+.footer{
+	width: 100%;
+	height: 60px;
+	position: fixed;
+	bottom:0;
+
+	z-index: 11;
+}
+.cardsContainer{
+	padding: 20px;
+	width: 100%;
+}
