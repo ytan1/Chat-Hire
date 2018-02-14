@@ -17,6 +17,12 @@ import AuthRoute from './components/authroute/AuthRoute'
 import Bossinfo from './containers/Bossinfo/Bossinfo'
 import Employeeinfo from './containers/Employeeinfo/Employeeinfo'
 import Dashboard from './containers/Dashboard/Dashboard'
+import Chatting from './containers/Chatting/Chatting'
+
+
+
+
+
 //import reducers
 import {reducer} from './redux/reducer'
 //create store and use devTool for redux
@@ -33,10 +39,10 @@ export const store = createStore(reducer, compose(
 function render(){
 	ReactDom.render(
 		(<Provider store={store}>
-			<div>
+			<div className="container">
 
 				<BrowserRouter>
-					<div>
+					<div className="container">
 					<AuthRoute />
 					<Switch>
 						
@@ -44,6 +50,7 @@ function render(){
 						<Route path="/register" component={Register}></Route>
 						<Route path="/bossinfo" component={Bossinfo}></Route>
 						<Route path="/employeeinfo" component={Employeeinfo}></Route>
+						<Route path="/chatting/:userid" component={Chatting}></Route>
 						<Route component={Dashboard}></Route>
 						
 					</Switch>

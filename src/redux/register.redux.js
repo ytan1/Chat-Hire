@@ -147,7 +147,7 @@ export const registerInfo = ({user, pwd, repeatPwd, type}) =>{
 				)
 			.then((res) => {
 				if(res.status===200 && res.data.code===0){
-					dispatch(loginSuccess({user, pwd, type}))
+					dispatch(loginSuccess({...res.data.data, pwd:''}))
 				}
 				else{
 					dispatch(loginError(res.data.msg))

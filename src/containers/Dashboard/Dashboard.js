@@ -111,7 +111,7 @@ export default class Dashboard extends React.Component {
   	const currentPage =  pageList.find(v => (v.path===pathname))
   	//if the pathname doesn't match any
   	if(!currentPage) { return <Redirect to={this.props.redirect} />}
-  	const title = pageList.find(v => (v.path===pathname)).title
+  	const title = currentPage.title
   	const {activeItem} = this.state
   	
 

@@ -1,12 +1,15 @@
 import React from 'react';
 import {connect} from 'react-redux'
+import {withRouter} from 'react-router-dom'
 import {Card, Image, Segment} from 'semantic-ui-react'
 import {updatePersonList} from '../../redux/userlist.redux'
+
+
+@withRouter
 @connect(
 	state => ({userlist: state.userlist}),
 	{updatePersonList}
 )
-
 export default class PersonList extends React.Component {
 
 
@@ -21,12 +24,16 @@ export default class PersonList extends React.Component {
   	
   }
 
+  toChat(id){
+  	this.props.history.push(`/chatting/${id}`)
+  }
+
   render() {
 
-  	console.log(this.props.type)
-  	if(!this.props.userlist.length){
-  		return null
-  	}
+
+  	// if(!this.props.userlist.length){    ???necessary
+  	// 	return null
+  	// }
   	console.log(this.props.userlist)
 
     return (
@@ -37,7 +44,7 @@ export default class PersonList extends React.Component {
       				const meta = this.props.type!=='Boss' ? `${v.title}, ${v.company}` : v.education
 
       				return (<Card key={v.user}>
-			      				<Card.Content>
+			      				<Card.Content onClick={() => this.toChat(v._id)}>
 				      			    <Image floated='right' size='small' src={`/pics/${v.picName}`} alt='avatar' />
 				      			    <Card.Header>{v.user}</Card.Header>
 				      			    <Card.Meta>{meta}</Card.Meta>

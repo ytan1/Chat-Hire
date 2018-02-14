@@ -3,11 +3,12 @@ import axios from 'axios'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { updateUserInfo } from '../../redux/register.redux'
+import { socketRegister } from '../../redux/chat.redux'
 
 @withRouter
 @connect(
 	null,
-	{updateUserInfo}
+	{updateUserInfo, socketRegister}
 	)
 export default class AuthRoute extends React.Component{
 	componentDidMount(){
@@ -26,6 +27,7 @@ export default class AuthRoute extends React.Component{
 					console.log(res.data)
 					if(res.data.code === 0){
 						this.props.updateUserInfo(res.data.data)
+						
 					}
 					else{
 						console.log('jump to /login')

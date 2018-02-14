@@ -20,7 +20,15 @@ const models = {
 		education:{type:String}
 	},
 	chat:{
-
+		chatId:{type: String, require: true},
+		msgList:[{
+					time: {type: Number, default: Date.now()}, 
+				  	from: {type: String, require: true}, 
+				  	to: {type: String, require: true}, 
+				 	text:{type:String, require: true},
+				 	
+				 }],
+		unread: {type: Number, default: 0}
 	}
 }
 

@@ -2,9 +2,10 @@
 	margin-top: 10vw;
 }
 
-.constainer{
+.container{
 	width: 100%;
 	height: 100%;
+	
 }
 
 .header1{
@@ -33,4 +34,88 @@
 .cardsContainer{
 	padding: 20px;
 	width: 100%;
+}
+.chat-input-wrap{
+	width: 100%;
+	height: 50px;
+	position: fixed;
+	bottom:0;
+	padding: 5px;
+	z-index: 11;
+}
+.chat-content{
+	position: fixed;
+	top: 60px;
+	bottom: 50px;
+	width: 100%;
+	
+	
+
+	padding: 10px;
+	overflow: auto;
+}
+.msg-container{
+	position: relative;
+}
+.my-msg{
+	margin: 10px;
+	padding: 10px;
+	font-size: 20px;
+	max-width: 180px;
+	border-radius: 10px;
+	float: right;
+	background-color: #8ffcb9;
+	color: black;
+	word-wrap: break-word;
+}
+.my-msg::after{
+	
+	font-size: 0;
+	border-left: 7px solid #8ffcb9;
+	border-top: 7px solid transparent;
+	border-bottom: 7px solid transparent;
+	content:'';
+	position: absolute;
+	right: 64px;
+	top: 20px;
+}
+.my-ava{
+	margin: 10px;
+	width: 40px;
+	height: 40px;
+	float: right;
+}
+
+.ur-msg{
+	margin: 10px;
+	padding: 10px;
+	font-size: 20px;
+	max-width: 180px;
+	border-radius: 10px;
+	float: left;
+	background-color: #d6d6d6;
+	color: black;
+	word-wrap: break-word;
+}
+
+.ur-msg::before{
+	font-size: 0;
+	border-right: 7px solid #d6d6d6;
+	border-top: 7px solid transparent;
+	border-bottom: 7px solid transparent;
+	content: '';
+	position: absolute;
+	left: 64px;
+}
+.ur-ava{
+	margin: 10px;
+	width: 40px;
+	height: 40px;
+	float: left;
+}
+.clearfix::after { 
+   content: "";
+   display: block; 
+   height: 0; 
+   clear: both;
 }
