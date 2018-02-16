@@ -78,7 +78,23 @@ io.on('connection', function(socket){
 			socket.emit('recvMsgList', doc)
 		})
 	})
-
+	socket.on('updateUnread', function(info){
+		const chatId = [info.from, info.to].sort().join('_')
+		chat.findOne({chatId}, function(err, doc){
+			if(err) {console.log(err)}
+			else if (doc) {
+				doc.msglist.forEach(v => {
+					if(v.from===info.from && v.to===info.to){
+						v.unread = false
+					}
+				})
+				chat.findOneAndUpdate({chatId}, {msgList: doc.msgList}, function(err, doc2){
+					if(err) {console.log(err)}
+					
+				})
+			}
+		})
+	})
 
 
 

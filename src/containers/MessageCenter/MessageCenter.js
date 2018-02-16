@@ -15,14 +15,14 @@ export default class MessageCenter extends React.Component {
   //   name: React.PropTypes.string,
   // };
   constructor(props) {
-    super(props);
+    super(props)
   }
   render() {
   	
   	if(!this.props.chat.msgList.length) {
   		return <div style={{fontSize: 12, textAlign: 'center'}}>There is no message yet!</div>
   	}
-
+    //get all messages send or recv by this user 
   	let list = [], msgList = this.props.chat.msgList
   
 	for (var w =0; w< msgList.length; w++) {
@@ -30,17 +30,21 @@ export default class MessageCenter extends React.Component {
 			if( msgList[w].chatId===list[v].chatId ) {
 				if( msgList[w].time>list[v].time ){
 					list[v] = msgList[w]
+                    if(msgList[w].unread)  { list[v].unread++ }
 					break
 				} else {
+                    if(msgList[w].unread)  { list[v].unread++ }
 					break
 				}
 			}
 		}
 		if(v === list.length){
 			list.push(msgList[w])
+            list[v].unread = 0
+            if(msgList[w].unread)  { list[v].unread++ }
 		}
 	}
-  		
+  	//in time order
 	list.sort((a,b) => b.time-a.time)
 	
 
@@ -49,9 +53,13 @@ export default class MessageCenter extends React.Component {
 		let you = this.props.userlist.find(v => v._id===urId)
 		v.user = you.user
 		v.picName = you.picName
-		
+		v.unread = v.unread ? v.unread : null
 	})
-	console.log(list)
+
+
+
+
+
     return (
 
       <div className='message-center'>
@@ -62,7 +70,8 @@ export default class MessageCenter extends React.Component {
 	      				<Card.Content>
 	      					<Image floated='left' size='mini' src={`/pics/${v.picName}`} />
 	      					<Card.Header>{v.user}</Card.Header>
-	      					<Card.Meta>{v.text}</Card.Meta>
+	      					<Card.Meta>{v.time}</Card.Meta>
+                            <Card.Description>{v.text}<span className='unread'>v.unread</span></Card.Description>
 	      				</Card.Content>
 	      			</Card>
 	      		))

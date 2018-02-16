@@ -119,3 +119,11 @@
    height: 0; 
    clear: both;
 }
+.unread{
+	float: right;
+	width: 12px;
+	height:12px;
+	border-radius: 50%;
+	background-color: red;
+	color: white;
+}

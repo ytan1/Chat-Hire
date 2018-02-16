@@ -3,12 +3,12 @@ import React from 'react';
 import { Input, Button } from 'semantic-ui-react'
 import {connect} from 'react-redux'
 
-import {sendMsg, socketRegister} from '../../redux/chat.redux'
+import {sendMsg, socketRegister, updateUnread} from '../../redux/chat.redux'
 
 
 @connect(
 	state => state,
-	{sendMsg, socketRegister}
+	{sendMsg, socketRegister, updateUnread}
 	)
 export default class Chatting extends React.Component {
   // static propTypes = {
@@ -25,6 +25,10 @@ export default class Chatting extends React.Component {
   componentDidMount(){
   	// const chatId = [this.props.match.params.userid, this.props.auth._id].sort().join('_')
   	// this.props.recvMsgList(chatId)
+  }
+
+  compoentDidUpdate(){
+    this.props.updateUnread({from: this.props.match.params.userid, to: this.props.auth._id})
   }
 
   handleInput(e){
