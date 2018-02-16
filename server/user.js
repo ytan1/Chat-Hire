@@ -8,6 +8,13 @@ const Router = express.Router()
 //for mongoose models
 const models = require('./model')
 const User = models.getModel('user')
+// const chat = models.getModel('chat')
+// Router.get('/debug', function(req, res){
+// 	chat.remove({'chatId':"5a7a68660c4a26924cdc2ba0_5a7a68660c4a26924cdc2ba0"}, function(err,doc){
+// 		if(err){ console.log(err)}
+// 		else{res.json({code:2, data: doc})}
+// 	})
+// })
 
 //for parse formdata of pic
 const multer = require('multer')

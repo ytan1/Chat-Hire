@@ -4,6 +4,7 @@ export const socket = io('ws://localhost:3030')
 
 const SEND_MSG = "send-msg"
 const RECV_MSG = 'recv-msg'
+const RECV_LIST = 'recv-list'
 
 
 
@@ -45,6 +46,15 @@ export const chat = (state=initState, action) => {
 			const {from, to, text, time} = action.payload
 			let chatId = [from, to].sort().join('_')
 			return {...state, msgList: [...state.msgList, {...action.payload, chatId}]}
+		case RECV_LIST:
+			let list = []
+			action.payload.forEach(v => {
+				let subList = v.msgList.map(v2 => {
+					return { chatId: v.chatId, ...v2 }
+				})
+				list = [...list, ...subList]
+			})
+			return {...state, msgList: list}
 		default:
 			return state
 
@@ -64,6 +74,9 @@ export const socketRegister = (data) => {
 		socket.on('findRecv', (text) => {
 			dispatch(recvMsg(text))
 		})
+		socket.on('recvMsgList', (doc) => {
+			dispatch(recvList(doc))
+		})
 
 	}
 }
@@ -75,3 +88,9 @@ const recvMsg = (data) => {
 	}
 }
 
+const recvList = (data) => {
+	return {
+		type: RECV_LIST,
+		payload: data
+	}
+}

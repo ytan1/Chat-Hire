@@ -2,13 +2,11 @@ import React from 'react';
 import {connect} from 'react-redux'
 import {Route,Redirect} from 'react-router-dom'
 import { Segment, Menu, Icon } from 'semantic-ui-react'
-import PersonList from '../../components/list/personList'
-// import MessageCenter from '../MessageCenter/MessageCenter'
-import Myinfo from '../Myinfo/Myinfo'
 
-const MessageCenter = () => {
-	return <div>Test </div>
-}
+import PersonList from '../../components/list/personList'
+import Myinfo from '../Myinfo/Myinfo'
+import MessageCenter from '../MessageCenter/MessageCenter'
+import { socketRegister } from '../../redux/chat.redux'
 
 const Boss = () => 
 	(<PersonList type='Boss' />)
@@ -19,7 +17,7 @@ const Employee = () =>
 
 @connect(
 	state => state.auth,
-	null
+	{socketRegister}
 )
 export default class Dashboard extends React.Component {
   // static propTypes = {
@@ -82,10 +80,14 @@ export default class Dashboard extends React.Component {
 		// 	activeItem: this.props.type.toLowerCase()
 		// })
   // 	}
-  // 	console.log(this.state.activeItem)
-  	
+  // 	console.log(this.state.activeItem)     //this part is alternated by the code in the front of render
+  														//fix bug when refreshing every redux prop is undefined
   // }
 
+  componentDidMount(){
+ 	//for get all messages sent or received by this user and record socketId in server
+  	this.props.socketRegister(this.props._id)
+  }
 	
 
   navClick(data){

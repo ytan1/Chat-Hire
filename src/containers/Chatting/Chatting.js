@@ -23,9 +23,8 @@ export default class Chatting extends React.Component {
   }
 
   componentDidMount(){
-  	const chatId = [this.props.match.params.userid, this.props.auth._id].sort().join('_')
+  	// const chatId = [this.props.match.params.userid, this.props.auth._id].sort().join('_')
   	// this.props.recvMsgList(chatId)
-  	this.props.socketRegister(this.props.auth._id)
   }
 
   handleInput(e){
@@ -35,14 +34,22 @@ export default class Chatting extends React.Component {
   }
 
   sendMsg(){
-  	// this.setState({
-  	// 	text: ''
-  	// })
+  	this.setState({
+  		text: ''
+  	})
   	this.props.sendMsg({text: this.state.text, from: this.props.auth._id, to: this.props.match.params.userid})
   	
   }
 
+  back(){
+  	this.props.history.push(`/${this.props.auth.type.toLowerCase()}`)
+  }
+
   render() {
+
+  	let title = this.props.userlist.find(v => v._id===this.props.match.params.userid).user
+
+
 
   	console.log(this.props.chat)
   	const chatId = [this.props.match.params.userid, this.props.auth._id].sort().join('_')
@@ -88,7 +95,8 @@ export default class Chatting extends React.Component {
     return (
       <div className="container">
       	<div className="header1">
-      		{this.props.match.params.userid}
+      		<span style={{float:'left', fontSize:16}} onClick={() => this.back()}>Back</span>
+      		<span>{title}</span>
       	</div>
       	<div className="chat-content">
       		{chatContent}

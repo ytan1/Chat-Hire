@@ -72,12 +72,23 @@ io.on('connection', function(socket){
 	//get socket id for accurately sending msg
 	socket.on('register', function(data){
 		socketId[data] = socket.id
+		//additionally get msg list from db
+		chat.find({$or:[{'msgList.from': data}, {'msgList.to': data}]}, function(err, doc){
+			if(err) { console.log(err) }
+			socket.emit('recvMsgList', doc)
+		})
 	})
 
 
 
 
 })
+
+// app.get('/debug', function(req, res){
+// 	chat.remove({'msgList.chatId':"5a7a68660c4a26924cdc2ba0_5a7a68660c4a26924cdc2ba0"}, function(err){
+// 		if(err){ console.log(err)}
+// 	})
+// })
 
 //port
 const PORT = 3030
