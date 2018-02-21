@@ -29,31 +29,35 @@ export default class MessageCenter extends React.Component {
 		for (var v=0; v< list.length; v++){
 			if( msgList[w].chatId===list[v].chatId ) {
 				if( msgList[w].time>list[v].time ){
-					list[v] = msgList[w]
-                    if(msgList[w].unread)  { list[v].unread++ }
+					list[v] = {...list[v], ...msgList[w]}
+                    if(msgList[w].unread && msgList[w].to===this.props.auth._id)  { list[v].unreadCount++; console.log(list[v].unreadCount)}
 					break
 				} else {
-                    if(msgList[w].unread)  { list[v].unread++ }
+                    if(msgList[w].unread && msgList[w].to===this.props.auth._id)  { list[v].unreadCount++; console.log(list[v].unreadCount) }
 					break
 				}
 			}
 		}
 		if(v === list.length){
 			list.push(msgList[w])
-            list[v].unread = 0
-            if(msgList[w].unread)  { list[v].unread++ }
+            list[v].unreadCount = 0
+            if(msgList[w].unread && msgList[w].to===this.props.auth._id)  { list[v].unreadCount++; console.log(list[v].unreadCount)}
 		}
 	}
   	//in time order
 	list.sort((a,b) => b.time-a.time)
 	
-
+	console.log(list)
 	list.forEach(v => {
+
 		let urId = v.from!==this.props.auth._id ? v.from : v.to
-		let you = this.props.userlist.find(v => v._id===urId)
-		v.user = you.user
+		console.log(urId)
+		let you = this.props.userlist.find(w => w._id===urId) //crash if jump to msgcenter page initially
+		v.user = you.user                                //because userlist not updated until jump to personlist after login , need to fix?
 		v.picName = you.picName
-		v.unread = v.unread ? v.unread : null
+
+		
+
 	})
 
 
@@ -71,7 +75,7 @@ export default class MessageCenter extends React.Component {
 	      					<Image floated='left' size='mini' src={`/pics/${v.picName}`} />
 	      					<Card.Header>{v.user}</Card.Header>
 	      					<Card.Meta>{v.time}</Card.Meta>
-                            <Card.Description>{v.text}<span className='unread'>v.unread</span></Card.Description>
+                            <Card.Description>{v.text}<span className='unread'>{v.unreadCount}</span></Card.Description>
 	      				</Card.Content>
 	      			</Card>
 	      		))

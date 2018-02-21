@@ -6,7 +6,7 @@ const SEND_MSG = "send-msg"
 const RECV_MSG = 'recv-msg'
 const RECV_LIST = 'recv-list'
 const UPDATE_UNREAD_REDUX = 'update-unread-redux'
-
+const RECV_MSG_FROM_SELF = 'recv-msg-from-self'
 
 
 // const initState = []
@@ -44,9 +44,15 @@ export const chat = (state=initState, action) => {
 	switch (action.type) {
 		case RECV_MSG:
 			const {from, to } = action.payload
-			let chatId = [from, to].sort().join('_')
+			const chatId = [from, to].sort().join('_')
 
-			return {...state, unread: state.unread + 1, msgList: [...state.msgList, {...action.payload, chatId}]}
+			return {...state, unread: state.unread + 1, msgList: [...state.msgList, {...action.payload, chatId, unread: true}]}
+		case RECV_MSG_FROM_SELF:
+			const from2 = action.payload.from, to2 = action.payload.to
+			const chatId2 = [from2, to2].sort().join('_')
+
+			return {...state,  msgList: [...state.msgList, {...action.payload, chatId: chatId2, unread: true}]}
+			
 		case RECV_LIST:
 			//convert the msgList from db to the msgList structure in the redux state
 			let list = []
@@ -57,15 +63,15 @@ export const chat = (state=initState, action) => {
 				list = [...list, ...subList]
 			})
 			//count total unread msgs
-			let unread = list.filter(v => v.unread).length
+			let unread = list.filter(v => v.unread && v.from!==action.myId).length
 			return {...state, unread, msgList: list}
 		case UPDATE_UNREAD_REDUX:
 			let newState = state
 			let count = 0
 			newState.msgList.forEach(v => {
 				if(v.unread && v.from === action.payload.from && v.to === action.payload.to){
-					v.unread = false
-					count++
+					v.unread = false;
+					count++;
 				}
 			})
 			//get total unread msgs by reducing 'count'
@@ -90,10 +96,13 @@ export const socketRegister = (data) => {
 		socket.on('findRecv', (text) => {
 			dispatch(recvMsg(text))
 		})
-		socket.on('recvMsgList', (doc) => {
-			dispatch(recvList(doc))
+		socket.on('msgFromSelf', (text) => {
+			dispatch(recvMsgFromSelf(text))
 		})
-
+		socket.on('recvMsgList', (doc) => {
+			dispatch(recvList(doc, data))    //msgList from db and myId in callback
+		})
+		console.log('did recvlist', data)
 	}
 }
 
@@ -104,10 +113,18 @@ const recvMsg = (data) => {
 	}
 }
 
-const recvList = (data) => {
+const recvMsgFromSelf = (data) => {
+	return {
+		type: RECV_MSG_FROM_SELF,
+		payload: data   //{from, to ,text, time}
+	}
+}
+
+const recvList = (data, myId) => {
 	return {
 		type: RECV_LIST,
-		payload: data
+		payload: data,
+		myId: myId
 	}
 }
 

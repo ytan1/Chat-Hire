@@ -1,10 +1,10 @@
 import React from 'react';
 // import {WithRouter} from 'react-router-dom'
-import { Input, Button } from 'semantic-ui-react'
+import { Input, Button, Icon } from 'semantic-ui-react'
 import {connect} from 'react-redux'
 
 import {sendMsg, socketRegister, updateUnread} from '../../redux/chat.redux'
-
+import EmojiGrid from '../../components/EmojiGrid/EmojiGrid'
 
 @connect(
 	state => state,
@@ -18,22 +18,31 @@ export default class Chatting extends React.Component {
     super(props);
     this.state = {
     	text: '',
-    	msg:[]
+    	msg:[],
+    	toggleEmoji:false
     }
+    this.sendEmoji = this.sendEmoji.bind(this)
   }
 
-  componentDidMount(){
+  // componentDidMount(){
   	// const chatId = [this.props.match.params.userid, this.props.auth._id].sort().join('_')
   	// this.props.recvMsgList(chatId)
-  }
+  // }
 
-  compoentDidUpdate(){
-    this.props.updateUnread({from: this.props.match.params.userid, to: this.props.auth._id})
-  }
+  // componentDidMount(){
+  // 	console.log(this.props.match.params.userid, this.props.auth._id)
+  //   this.props.updateUnread({from: this.props.match.params.userid, to: this.props.auth._id})
+  // }
 
   handleInput(e){
   	this.setState({
   		text: e.target.value
+  	})
+  }
+
+  toggleEmoji(){
+  	this.setState({
+  		toggleEmoji: !this.state.toggleEmoji
   	})
   }
 
@@ -47,6 +56,13 @@ export default class Chatting extends React.Component {
 
   back(){
   	this.props.history.push(`/${this.props.auth.type.toLowerCase()}`)
+  }
+
+
+  sendEmoji(emoji){
+  	this.setState({
+  		text: this.state.text + emoji
+  	})
   }
 
   render() {
@@ -92,21 +108,31 @@ export default class Chatting extends React.Component {
   			})
   	}
 
+  	this.props.updateUnread({from: this.props.match.params.userid, to: this.props.auth._id})
 
-
-
-
+  	const emoji = '🙂 😁 😂 🤣 😠 ❤️ 🖤 😒 🤨 😍 🙇 🙈 🙉 🙊 💥 🐶 🐱 🦄 🌿 🍇 🍈 🍉 🍌 🍍 🍓 🍆 🍄 🍕 🤷 👾 🚣 🏎️ 🗾 🏞️ 🏠 🏥 🏦 🗽 🎠 🌋 🌋 🚀 🎆 🗿 🇨🇦 🇨🇳 🇨🇿 🇨🇺 🇮🇹 🇷🇺'
+  					.split(' ')
+  					.filter(v=>v)
+  					.map(v => ({text:v}))
+  	const contentBottom = this.state.toggleEmoji ? {bottom: 200} : null
     return (
       <div className="container">
       	<div className="header1">
       		<span style={{float:'left', fontSize:16}} onClick={() => this.back()}>Back</span>
       		<span>{title}</span>
       	</div>
-      	<div className="chat-content">
+      	<div className="chat-content" style={contentBottom}>
       		{chatContent}
       	</div>
       	<div className='chat-input-wrap'>
-      		<Input action={<Button content='Send' primary onClick={() => this.sendMsg()}/>} fluid onChange={(e) => this.handleInput(e)} value={this.state.text}/>
+      		<Input action fluid onChange={(e) => this.handleInput(e)} value={this.state.text}>
+	      		<input/>
+	      		<Button basic icon='pointing down' onClick={() => this.toggleEmoji()}/>
+	      		<Button content='Send' primary onClick={() => this.sendMsg()}/>
+      		</Input>
+
+      		{this.state.toggleEmoji ? <EmojiGrid data={emoji} columnNum={8} sendEmoji={this.sendEmoji}/> : null}
+			
       	</div>
       </div>
     );

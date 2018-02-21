@@ -63,7 +63,7 @@ io.on('connection', function(socket){
 					else { 
 	
 						io.to(socketId[to]).emit('findRecv', data)
-						socket.emit('findRecv', data)
+						socket.emit('msgFromSelf', data)
 					}
 				})
 			}
@@ -83,11 +83,14 @@ io.on('connection', function(socket){
 		chat.findOne({chatId}, function(err, doc){
 			if(err) {console.log(err)}
 			else if (doc) {
-				doc.msglist.forEach(v => {
+				console.log(doc)
+				doc.msgList.forEach(v => {
 					if(v.from===info.from && v.to===info.to){
 						v.unread = false
 					}
+
 				})
+				console.log(doc)
 				chat.findOneAndUpdate({chatId}, {msgList: doc.msgList}, function(err, doc2){
 					if(err) {console.log(err)}
 					
