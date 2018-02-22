@@ -2,13 +2,13 @@ import React from 'react';
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { Card, Image } from 'semantic-ui-react'
-
+import {updatePersonList} from '../../redux/userlist.redux'
 
 
 @withRouter
 @connect(
 	state => state,
-	null
+	{updatePersonList}
 )
 export default class MessageCenter extends React.Component {
   // static propTypes = {
@@ -17,6 +17,7 @@ export default class MessageCenter extends React.Component {
   constructor(props) {
     super(props)
   }
+
   render() {
   	
   	if(!this.props.chat.msgList.length) {
@@ -47,19 +48,21 @@ export default class MessageCenter extends React.Component {
   	//in time order
 	list.sort((a,b) => b.time-a.time)
 	
-	console.log(list)
+	let userAllExist = true
 	list.forEach(v => {
 
 		let urId = v.from!==this.props.auth._id ? v.from : v.to
-		console.log(urId)
-		let you = this.props.userlist.find(w => w._id===urId) //crash if jump to msgcenter page initially
-		v.user = you.user                                //because userlist not updated until jump to personlist after login , need to fix?
+		let you = this.props.userlist.find(w => w._id===urId) //crash if jump to msgcenter page initially//because userlist not updated until jump to personlist after login , need to fix?
+		if(!you){											// to debug, 
+			this.props.updatePersonList(this.props.auth.type)
+			userAllExist = false
+			return null
+		}
+		v.userId = urId
+		v.user = you.user                                
 		v.picName = you.picName
-
-		
-
 	})
-
+	if(!userAllExist){ return null }
 
 
 
@@ -70,7 +73,7 @@ export default class MessageCenter extends React.Component {
       	<Card.Group itemsPerRow={1}>
 	      	{
 	      		list.map((v, index) => (
-	      			<Card key={index}>
+	      			<Card key={index} onClick={() => this.props.history.push(`/chatting/${v.userId}`)}>
 	      				<Card.Content>
 	      					<Image floated='left' size='mini' src={`/pics/${v.picName}`} />
 	      					<Card.Header>{v.user}</Card.Header>

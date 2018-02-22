@@ -21,7 +21,7 @@ const multer = require('multer')
 //to see all the user info
 Router.get('/userlist', function(req, res){
 	const {type} = req.query
-	User.find({type}, function(err, doc){
+	User.find({type}, {'pwd':0}, function(err, doc){
 		if(err){
 			console.log(err)
 		}else{

@@ -5,10 +5,10 @@ import CheckBox from './checkBox/checkBox'
 import {connect} from 'react-redux'
 import {reducer} from '../redux/reducer'
 import { registerInfo } from '../redux/register.redux'
-
+import { socketRegister } from '../redux/chat.redux'
 @connect(
     state => state.auth,
-    {registerInfo}
+    {registerInfo, socketRegister}
   )
 export default class Register extends React.Component {
 
@@ -42,6 +42,11 @@ export default class Register extends React.Component {
 
   }
   render() {
+
+    //if register success this.props._id exists socketRegister before redirect
+    if(this.props._id){
+      this.props.socketRegister(this.props._id)
+    }
 
     return (
       <div id="register">
