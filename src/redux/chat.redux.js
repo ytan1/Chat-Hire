@@ -1,8 +1,8 @@
 
 import io from 'socket.io-client'
-export const socket = io('ws://localhost:3030')
+export const socket = io('ws://192.168.0.12:3030')
 
-const SEND_MSG = "send-msg"
+
 const RECV_MSG = 'recv-msg'
 const RECV_LIST = 'recv-list'
 const UPDATE_UNREAD_REDUX = 'update-unread-redux'
@@ -76,6 +76,7 @@ export const chat = (state=initState, action) => {
 			})
 			//get total unread msgs by reducing 'count'
 			newState.unread = newState.unread - count
+			console.log(newState)
 			return newState
 		default:
 			return state
@@ -92,19 +93,33 @@ export const sendMsg = (data) => {
 
 export const socketRegister = (data) => {
 	return dispatch => {
-		socket.emit('register', data)
-		socket.on('findRecv', (text) => {
-			dispatch(recvMsg(text))
-		})
-		socket.on('msgFromSelf', (text) => {
-			dispatch(recvMsgFromSelf(text))
-		})
-		socket.on('recvMsgList', (doc) => {
-			dispatch(recvList(doc, data))    //msgList from db and myId in callback
-		})
-		console.log('did recvlist', data)
+		if(!socket.hasListeners('findRecv')){
+			socket.emit('register', data)
+			socket.on('findRecv', (text) => {     
+				dispatch(recvMsg(text))
+			})
+			socket.on('msgFromSelf', (text) => {
+				dispatch(recvMsgFromSelf(text))
+			})
+			socket.on('recvMsgList', (doc) => {
+				dispatch(recvList(doc, data))    //msgList from db and myId in callback
+			})
+			console.log('socket register in redux success')
+		}
+		
+
 	}
 }
+
+export const logoutSocket = () => {
+	return dispatch => {
+		socket.off('findRecv')
+		socket.off('msgFromSelf')
+		socket.off('recvMsgList')
+	}
+	
+}
+
 
 const recvMsg = (data) => {
 	return {
@@ -132,6 +147,7 @@ export const updateUnread = (info) => {
 	return dispatch => {
 		socket.emit('updateUnread', info) 
 		dispatch(updateUnreadRedux(info))
+
 	}
 }
 const updateUnreadRedux = (info) => {

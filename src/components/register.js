@@ -3,7 +3,7 @@ import { Redirect } from 'react-router-dom'
 import { Button, Divider, Segment, Input } from 'semantic-ui-react'
 import CheckBox from './checkBox/checkBox'
 import {connect} from 'react-redux'
-import {reducer} from '../redux/reducer'
+
 import { registerInfo } from '../redux/register.redux'
 import { socketRegister } from '../redux/chat.redux'
 @connect(
@@ -63,7 +63,7 @@ export default class Register extends React.Component {
 	      	<Divider horizontal />
 	      	<Button secondary fluid onClick={this.handleRegister}>Sign Up Now</Button>
           <Divider hidden />
-          { this.props.msg ? <p>{this.props.msg}</p> : null}
+          { this.props.msg&&this.props.errorPage==='register' ? <div className='error-msg'>{this.props.msg}</div> : null}
 	    </Segment>
       </div>
     );

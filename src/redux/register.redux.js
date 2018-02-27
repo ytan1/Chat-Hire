@@ -2,7 +2,7 @@ import axios from 'axios'
 import { getRedirect } from '../util.js'
 const LOGIN_ERROR = 'login-error'
 const LOGIN_SUCCESS = 'login-success'
-const LOGIN_INFO = 'login-info'
+
 const UPDATE_USERINFO = 'update-userinfo'
 const LOGOUT = 'logout'
 
@@ -19,7 +19,7 @@ export const auth = (state=initState, action) =>{
 		case LOGIN_SUCCESS:
 			return {...state, isLogout: 1, ...action.payload, redirect:getRedirect(action.payload)}
 		case LOGIN_ERROR:
-			return {...state, msg: action.msg}
+			return {...state, msg: action.msg, errorPage: action.errorPage}
 		case UPDATE_USERINFO:
 			return {...state, isLogout: 1,...action.payload, redirect:getRedirect(action.payload)}
 		case LOGOUT: 
@@ -33,7 +33,7 @@ export const loginInfo = (info) => {
 	return (dispatch) => {
 		let { user, pwd } = info
 		if(!user || !pwd) {
-			dispatch(loginError("Info not completed"))
+			dispatch(loginError({msg: "Info not completed", errorPage: 'login'}))
 		}else{
 			axios.post('user/login', {data: info})
 				.then(res => {
@@ -41,7 +41,7 @@ export const loginInfo = (info) => {
 						dispatch(loginSuccess(res.data.data))
 					}
 					else{
-						dispatch(loginError(res.data.msg))
+						dispatch(loginError({msg: res.data.msg, errorPage: 'login'}))
 					}
 				})
 		}
@@ -53,13 +53,25 @@ export const storePic = (info) => {
 		let { user, type, file, picName, company, title, more, education, CV } = info
 		let picData = new FormData(), CVData = new FormData()
 
+		if(!file){
+			dispatch((loginError({msg: "Please upload your avatar!", errorPage:'info'})))
+			return false
+		}
+		if(type==='Employee' && (!CV)) {
+			dispatch((loginError({msg: "Please upload a file for your CV!", errorPage:'info'})))
+			return false
+		}
 		
 		//filename field should be in front of file field , 
 		//otherwise diskstorage cannot get req.body.filename
-		const CVName = user + '.' + CV.name.match(/\.(\w+)$/)[1]
-		CVData.append('user', user)
-		CVData.append('filename', CVName)
-		CVData.append('file', CV)
+		let CVName = ''
+		if(CV){
+			CVName = user + '.' + CV.name.match(/\.(\w+)$/)[1]
+			CVData.append('user', user)
+			CVData.append('filename', CVName)
+			CVData.append('file', CV)
+		}
+			
 
 		picData.append('user', user)
 		picData.append('filename', picName)
@@ -67,11 +79,7 @@ export const storePic = (info) => {
 		
 		// picData.append('imgURL', imgURL)
 
-		if(!file){
-			dispatch((loginError("Please upload your avatar!")))
-			return false
-		}
-
+		
 		function passCVData(){
 			if(!CV){ return null}
 			return axios.post('/user/employeeinfo/cv', CVData)
@@ -95,7 +103,7 @@ export const storePic = (info) => {
 
 					dispatch(updateUserInfo({...info, CVName}))
 				}else{
-					dispatch(loginError("Error when store pic and other info!"))
+					dispatch(loginError({msg: "Error when store pic and other info!", errorPage: 'info'}))
 				}
 			}, err => {
 				console.log(err)
@@ -111,9 +119,10 @@ export const updateUserInfo = (data) => {
 	}
 }
 
-const loginError = (msg) => {
+const loginError = ({msg, errorPage}) => {
 	return {
 		msg,
+		errorPage,  //for register or login
 		type: LOGIN_ERROR
 	}
 }
@@ -130,16 +139,16 @@ export const registerInfo = ({user, pwd, repeatPwd, type}) =>{
 	return (dispatch) => {
 		//if validate info
 		if(!user || !pwd || !repeatPwd){
-			dispatch(loginError("Info not completed!"))
+			dispatch(loginError({msg: "Info not completed!", errorPage: 'register'}))
 		}
 		else if(pwd !== repeatPwd ){
-			dispatch(loginError("Please input same password!"))
+			dispatch(loginError({msg: "Please input same password!",  errorPage: 'register'}))
 		}
 		else if(pwd.length < 6){
-			dispatch(loginError("Password too short!"))
+			dispatch(loginError({msg: "Password too short!",  errorPage: 'register'}))
 		}
 		else if(pwd.search(/\d/)===-1 || pwd.search(/[a-z]/)===-1 || pwd.search(/[A-Z]/)===-1){
-			dispatch(loginError("Password should be more complex!"))
+			dispatch(loginError({msg: "Password should be more complex! Please include number, lowercase & uppercase...",  errorPage: 'register'}))
 		}else{
 			//pass info to server localhost:3030/user/info
 			axios.post('/user/register',
@@ -150,7 +159,7 @@ export const registerInfo = ({user, pwd, repeatPwd, type}) =>{
 					dispatch(loginSuccess({...res.data.data, pwd:''}))
 				}
 				else{
-					dispatch(loginError(res.data.msg))
+					dispatch(loginError({msg: res.data.msg, errorPage: 'register'}))
 				}
 			})
 		}

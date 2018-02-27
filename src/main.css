@@ -31,9 +31,18 @@
 
 	z-index: 11;
 }
+.error-msg{
+	color: red;
+	text-align: center;
+
+}
 .cardsContainer{
 	padding: 20px;
 	width: 100%;
+	position: fixed;
+	top: 60px;
+	bottom: 60px;
+	overflow: auto;
 }
 .chat-input-wrap{
 	width: 100%;

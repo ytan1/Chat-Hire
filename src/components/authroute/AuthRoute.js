@@ -19,7 +19,7 @@ export default class AuthRoute extends React.Component{
 			return null
 		}
 
-
+		
 		//check if there's cookie in response in backend server , process in Router.get('/info',...)
 		axios.get('/user/info')
 			.then((res) => {

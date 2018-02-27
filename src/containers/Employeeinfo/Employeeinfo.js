@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Redirect } from 'react-router-dom'
-import { Segment, Input, Divider, TextArea, Button, Image } from 'semantic-ui-react'
+import { Segment, Input, Divider, TextArea, Button } from 'semantic-ui-react'
 
 
 import Avatar from '../../components/avatar/avatar'
@@ -47,7 +47,8 @@ export default class Employeeinfo extends React.Component{
 		if(!file){
 			this.setState({
 				imgURL: '',  //for preview
-				file: ''
+				file: '',
+				picName: ''
 			})
 			return
 		}
@@ -98,7 +99,7 @@ export default class Employeeinfo extends React.Component{
 				<Input type='file' onChange={this.handleCVChange}/>
 				<Divider hidden />
 				<Button primary fluid onClick={this.complete}>Complete</Button>
-
+				{this.props.msg&&this.props.errorPage==='info' ? <div className='error-msg'>{this.props.msg}</div> : null}
 			</Segment>
 			)
 	}

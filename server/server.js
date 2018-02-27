@@ -40,7 +40,7 @@ let socketId = {}
 io.on('connection', function(socket){
 	console.log('one user connected')
 	socket.on('sendMsg', function(data){
-
+		console.log('send Msg')
 		const { from, text, to } = data
 		data.time = Date.now()
 
@@ -53,7 +53,7 @@ io.on('connection', function(socket){
 					if(err) { console.log(err) }
 					else { 
 						io.to(socketId[to]).emit('findRecv', data) 
-						socket.emit('findRecv', data) 
+						socket.emit('msgFromSelf', data) 
 					}
 				})
 			} else {

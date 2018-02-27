@@ -1,7 +1,8 @@
 import React from 'react';
 import {connect} from 'react-redux'
-import {Route,Redirect} from 'react-router-dom'
-import { Segment, Menu, Label, Icon } from 'semantic-ui-react'
+import {Route,Redirect,Switch} from 'react-router-dom'
+import { Menu, Label, Icon } from 'semantic-ui-react'
+import {TransitionGroup, CSSTransition} from 'react-transition-group'
 
 import PersonList from '../../components/list/personList'
 import Myinfo from '../Myinfo/Myinfo'
@@ -102,9 +103,9 @@ export default class Dashboard extends React.Component {
 
   	//check if type is passed in as prop
 	if(!this.props.type && this.props.isLogout===0){
-		return null
+		return <div></div>
 	}else if(this.props.isLogout===-1){
-			return <Redirect to='/login' />
+			return <div><Redirect to='/login' /></div>
 	}
 	
 
@@ -114,7 +115,7 @@ export default class Dashboard extends React.Component {
   	//if the pathname doesn't match any
   	if(!currentPage) { return <Redirect to={this.props.redirect} />}
   	const title = currentPage.title
-  	const {activeItem} = this.state
+
   	const unreadColor = this.props.unread ? 'teal' : 'grey'
 
     return (
@@ -124,7 +125,9 @@ export default class Dashboard extends React.Component {
       	<div className='header1'>{title}</div>
       	
       	<div style={{marginTop:'60px'}}>
+      		<TransitionGroup><CSSTransition key={this.props.location.key} classNames="fade" timeout={300}><Switch location={this.props.location}>
       		{pageList.map(v => <Route key={v.path} path={v.path} component={v.component} />)}
+      		</Switch></CSSTransition></TransitionGroup>
       	</div>
 
   		<Menu fluid className='footer' widths={3}>

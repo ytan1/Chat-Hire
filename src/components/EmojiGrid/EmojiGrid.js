@@ -10,9 +10,7 @@ export default class EmojiGrid extends React.Component {
   // static propTypes = {
   //   name: React.PropTypes.string,
   // };
-  constructor(props) {
-    super(props);
-  }
+
   render() {
   	const columnNum = this.props.columnNum
   	const data = this.props.data

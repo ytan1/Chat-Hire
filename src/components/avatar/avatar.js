@@ -5,9 +5,7 @@ import './avatar.css'
 
 export default class Avatar extends React.Component {
 
-  constructor(props) {
-    super(props);
-  }
+
   render() {
   	let imagePreview = null
   	if(this.props.imgURL){

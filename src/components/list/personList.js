@@ -1,7 +1,7 @@
 import React from 'react';
 import {connect} from 'react-redux'
 import {withRouter} from 'react-router-dom'
-import {Card, Image, Segment} from 'semantic-ui-react'
+import {Card, Image} from 'semantic-ui-react'
 import {updatePersonList} from '../../redux/userlist.redux'
 
 
@@ -13,9 +13,7 @@ import {updatePersonList} from '../../redux/userlist.redux'
 export default class PersonList extends React.Component {
 
 
-  constructor(props) {
-    super(props);
-  }
+
   componentWillMount(){	
 
   	//requesting users' data from redux axios to this.props.userlist
@@ -34,7 +32,7 @@ export default class PersonList extends React.Component {
   	// if(!this.props.userlist.length){    ???necessary
   	// 	return null
   	// }
-  	console.log(this.props.userlist)
+
 
     return (
       <div className='cardsContainer'>
@@ -51,7 +49,7 @@ export default class PersonList extends React.Component {
 				      			    <Card.Description>{v.more}</Card.Description>
 				      			</Card.Content>
 				      			<Card.Content extra>
-				      				{v.CVName ? (<a href={`http://localhost:3030/cv/${v.CVName}`} download >{`${v.user}\'s CV`}</a>) : null}
+				      				{v.CVName ? (<a href={`http://192.168.0.12:3030/cv/${v.CVName}`} download >{`${v.user}'s CV`}</a>) : null}
 				      			</Card.Content>
 	      					</Card>)}
       		)}
