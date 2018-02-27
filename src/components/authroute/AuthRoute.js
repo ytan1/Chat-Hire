@@ -19,7 +19,7 @@ export default class AuthRoute extends React.Component{
 			return null
 		}
 
-
+		
 		//check if there's cookie in response in backend server , process in Router.get('/info',...)
 		axios.get('/user/info')
 			.then((res) => {
@@ -27,7 +27,7 @@ export default class AuthRoute extends React.Component{
 					console.log(res.data)
 					if(res.data.code === 0){
 						this.props.updateUserInfo(res.data.data)
-						
+						this.props.socketRegister(res.data.data._id)
 					}
 					else{
 						console.log('jump to /login')

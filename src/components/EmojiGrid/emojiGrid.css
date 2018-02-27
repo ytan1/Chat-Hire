@@ -1,0 +1,13 @@
+.row{
+	height: 45px;
+
+}
+.emojiContainer{
+	height: 180px;
+	
+	overflow: auto;
+	padding: 5px;
+	margin: 5px;
+	background-color: #eee;
+
+}

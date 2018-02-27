@@ -1,16 +1,16 @@
 import React from 'react';
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 import { Card, Image, Button, Modal, Divider } from 'semantic-ui-react'
 import cookies from 'browser-cookies'
-import { Redirect } from 'react-router-dom'
-import {logout} from '../../redux/register.redux'
 
+import { logout } from '../../redux/register.redux'
+import { logoutSocket } from '../../redux/chat.redux'
 
 
 
 @connect(
 	state => state.auth,
-	{logout}
+	{logout, logoutSocket}
 )
 export default class Myinfo extends React.Component {
   // static propTypes = {
@@ -21,7 +21,8 @@ export default class Myinfo extends React.Component {
     this.state = {
     	open: false
     }
-
+    this.closeModal = this.closeModal.bind(this)
+    this.logout = this.logout.bind(this)
   }
 
   triggerModal(){
@@ -42,13 +43,14 @@ export default class Myinfo extends React.Component {
   	})
   	//use a package to erase the cookie
   	cookies.erase('userid')
-
+    this.props.logoutSocket()
   	 this.props.logout()
 
   }
 
   render() {
   	const title = this.props.type==='Boss'?`Looking for ${this.props.title}`:null
+
 
     return (
       <div style={{padding:20}}>
@@ -62,7 +64,7 @@ export default class Myinfo extends React.Component {
       			
       		</Card.Content>
       		<Card.Content extra>
-      			{this.props.CVName ? <a href={`http://localhost:3030/cv/${this.props.CVName}`} download >My CV</a> : null }
+      			{this.props.CVName ? <a href={`http://192.168.0.12:3030/cv/${this.props.CVName}`} download >My CV</a> : null }
       		</Card.Content>
 
       	</Card>
@@ -74,8 +76,8 @@ export default class Myinfo extends React.Component {
       			Do you want to log out?
       		</Modal.Header>
       		<Modal.Actions>
-      			<Button negative onClick={() => this.closeModal()}>Nope</Button>
-      			<Button positive icon='checkmark' onClick={() => this.logout()} content='Yes' />
+      			<Button negative onClick={this.closeModal}>Nope</Button>
+      			<Button positive icon='checkmark' onClick={this.logout} content='Yes' />
       		</Modal.Actions>
       	</Modal>
       </div>

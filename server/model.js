@@ -26,9 +26,8 @@ const models = {
 				  	from: {type: String, require: true}, 
 				  	to: {type: String, require: true}, 
 				 	text:{type:String, require: true},
-				 	
-				 }],
-		unread: {type: Number, default: 0}
+				 	unread: {type: Boolean, default: true}
+				 }]
 	}
 }
 

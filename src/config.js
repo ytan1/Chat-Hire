@@ -4,15 +4,15 @@ import {store} from './index'
 import { toggle } from './redux/loader.redux'
 axios.interceptors.request.use(function(config){
 	store.dispatch(toggle(true))
-	console.log(store.getState())
+	// console.log(store.getState())
 	return config
 })
 
 axios.interceptors.response.use(function(res){
-	setTimeout(() => {
+	// setTimeout(() => {
 		store.dispatch(toggle(false));
-		console.log(store.getState());
-	}, 2000)
+		// console.log(store.getState());
+	// }, 2000)
 	
 	return res
 })

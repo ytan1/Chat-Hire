@@ -10,7 +10,7 @@ const models = require('./model')
 const User = models.getModel('user')
 // const chat = models.getModel('chat')
 // Router.get('/debug', function(req, res){
-// 	chat.remove({'chatId':"5a7a68660c4a26924cdc2ba0_5a7a68660c4a26924cdc2ba0"}, function(err,doc){
+// 	chat.remove({'chatId':"5a7a68cd0c4a26924cdc2ba2_5a7a68cd0c4a26924cdc2ba2"}, function(err,doc){
 // 		if(err){ console.log(err)}
 // 		else{res.json({code:2, data: doc})}
 // 	})
@@ -21,7 +21,7 @@ const multer = require('multer')
 //to see all the user info
 Router.get('/userlist', function(req, res){
 	const {type} = req.query
-	User.find({type}, function(err, doc){
+	User.find({type}, {'pwd':0}, function(err, doc){
 		if(err){
 			console.log(err)
 		}else{

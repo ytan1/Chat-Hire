@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Redirect } from 'react-router-dom'
-import { Segment, Input, Divider, TextArea, Button, Image } from 'semantic-ui-react'
+import { Segment, Input, Divider, TextArea, Button } from 'semantic-ui-react'
 
 import Avatar from '../../components/avatar/avatar'
 import { storePic } from '../../redux/register.redux'
@@ -32,7 +32,8 @@ export default class Bossinfo extends React.Component{
 		if(!file){
 			this.setState({
 				imgURL: '',  //for preview
-				file: ''
+				file: '',
+				picName: ''
 			})
 			return
 		}
@@ -85,7 +86,7 @@ export default class Bossinfo extends React.Component{
 				<TextArea style={{width: '100%', border: 'none', padding: '6px'}} placeholder="Tell us more" rows={10} onChange={(e) => this.handleTextChange('more', e)} value={this.state.more} />
 				<Divider hidden />
 				<Button primary fluid onClick={this.complete}>Complete</Button>
-
+				{this.props.msg&&this.props.errorPage==='info' ? <div className='error-msg'>{this.props.msg}</div> : null}
 			</Segment>
 			)
 	}

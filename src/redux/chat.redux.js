@@ -1,12 +1,12 @@
 
 import io from 'socket.io-client'
-export const socket = io('ws://localhost:3030')
+export const socket = io('ws://192.168.0.12:3030')
 
-const SEND_MSG = "send-msg"
+
 const RECV_MSG = 'recv-msg'
 const RECV_LIST = 'recv-list'
-
-
+const UPDATE_UNREAD_REDUX = 'update-unread-redux'
+const RECV_MSG_FROM_SELF = 'recv-msg-from-self'
 
 
 // const initState = []
@@ -43,10 +43,18 @@ const initState = {
 export const chat = (state=initState, action) => {
 	switch (action.type) {
 		case RECV_MSG:
-			const {from, to, text, time} = action.payload
-			let chatId = [from, to].sort().join('_')
-			return {...state, msgList: [...state.msgList, {...action.payload, chatId}]}
+			const {from, to } = action.payload
+			const chatId = [from, to].sort().join('_')
+
+			return {...state, unread: state.unread + 1, msgList: [...state.msgList, {...action.payload, chatId, unread: true}]}
+		case RECV_MSG_FROM_SELF:
+			const from2 = action.payload.from, to2 = action.payload.to
+			const chatId2 = [from2, to2].sort().join('_')
+
+			return {...state,  msgList: [...state.msgList, {...action.payload, chatId: chatId2, unread: true}]}
+			
 		case RECV_LIST:
+			//convert the msgList from db to the msgList structure in the redux state
 			let list = []
 			action.payload.forEach(v => {
 				let subList = v.msgList.map(v2 => {
@@ -54,7 +62,22 @@ export const chat = (state=initState, action) => {
 				})
 				list = [...list, ...subList]
 			})
-			return {...state, msgList: list}
+			//count total unread msgs
+			let unread = list.filter(v => v.unread && v.from!==action.myId).length
+			return {...state, unread, msgList: list}
+		case UPDATE_UNREAD_REDUX:
+			let newState = state
+			let count = 0
+			newState.msgList.forEach(v => {
+				if(v.unread && v.from === action.payload.from && v.to === action.payload.to){
+					v.unread = false;
+					count++;
+				}
+			})
+			//get total unread msgs by reducing 'count'
+			newState.unread = newState.unread - count
+			console.log(newState)
+			return newState
 		default:
 			return state
 
@@ -70,16 +93,33 @@ export const sendMsg = (data) => {
 
 export const socketRegister = (data) => {
 	return dispatch => {
-		socket.emit('register', data)
-		socket.on('findRecv', (text) => {
-			dispatch(recvMsg(text))
-		})
-		socket.on('recvMsgList', (doc) => {
-			dispatch(recvList(doc))
-		})
+		if(!socket.hasListeners('findRecv')){
+			socket.emit('register', data)
+			socket.on('findRecv', (text) => {     
+				dispatch(recvMsg(text))
+			})
+			socket.on('msgFromSelf', (text) => {
+				dispatch(recvMsgFromSelf(text))
+			})
+			socket.on('recvMsgList', (doc) => {
+				dispatch(recvList(doc, data))    //msgList from db and myId in callback
+			})
+			console.log('socket register in redux success')
+		}
+		
 
 	}
 }
+
+export const logoutSocket = () => {
+	return dispatch => {
+		socket.off('findRecv')
+		socket.off('msgFromSelf')
+		socket.off('recvMsgList')
+	}
+	
+}
+
 
 const recvMsg = (data) => {
 	return {
@@ -88,9 +128,31 @@ const recvMsg = (data) => {
 	}
 }
 
-const recvList = (data) => {
+const recvMsgFromSelf = (data) => {
+	return {
+		type: RECV_MSG_FROM_SELF,
+		payload: data   //{from, to ,text, time}
+	}
+}
+
+const recvList = (data, myId) => {
 	return {
 		type: RECV_LIST,
-		payload: data
+		payload: data,
+		myId: myId
+	}
+}
+
+export const updateUnread = (info) => {
+	return dispatch => {
+		socket.emit('updateUnread', info) 
+		dispatch(updateUnreadRedux(info))
+
+	}
+}
+const updateUnreadRedux = (info) => {
+	return {
+		type: UPDATE_UNREAD_REDUX,
+		payload: info
 	}
 }

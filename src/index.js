@@ -3,8 +3,10 @@ import React from 'react'
 import ReactDom from 'react-dom'
 import thunk from 'redux-thunk'
 import { Provider } from 'react-redux'
-import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom'
+import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import './main.css'
+import './reactTransitionGroup.css'
+
 //for loader
 
 import './config'
@@ -28,13 +30,9 @@ import {reducer} from './redux/reducer'
 //create store and use devTool for redux
 export const store = createStore(reducer, compose(
 	applyMiddleware(thunk),
-	window.devToolsExtension ? window.devToolsExtension() : () => {}
+	window.devToolsExtension ? window.devToolsExtension() : f => f
 	)
 )
-
-// const init = store.getState()
-// console.log(init)
-
 
 function render(){
 	ReactDom.render(
@@ -42,19 +40,24 @@ function render(){
 			<div className="container">
 
 				<BrowserRouter>
+
 					<div className="container">
-					<AuthRoute />
-					<Switch>
+						<AuthRoute />
 						
-						<Route path="/login" component={Login}></Route>
-						<Route path="/register" component={Register}></Route>
-						<Route path="/bossinfo" component={Bossinfo}></Route>
-						<Route path="/employeeinfo" component={Employeeinfo}></Route>
-						<Route path="/chatting/:userid" component={Chatting}></Route>
-						<Route component={Dashboard}></Route>
-						
-					</Switch>
+								<Switch>
+									
+									<Route path="/login" component={Login}></Route>
+									<Route path="/register" component={Register}></Route>
+									<Route path="/bossinfo" component={Bossinfo}></Route>
+									<Route path="/employeeinfo" component={Employeeinfo}></Route>
+									<Route path="/chatting/:userid" component={Chatting}></Route>
+									<Route component={Dashboard}></Route>
+									
+								</Switch>
+					
+	
 					</div>
+
 				</BrowserRouter>
 				<LoaderCon />
 			</div>
