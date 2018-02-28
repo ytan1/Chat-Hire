@@ -1,6 +1,6 @@
 
 import io from 'socket.io-client'
-export const socket = io('ws://192.168.0.12:3030')
+export const socket = io('ws://192.168.0.25:3030')
 
 
 const RECV_MSG = 'recv-msg'

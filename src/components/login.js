@@ -38,7 +38,7 @@ export default class Login extends React.Component {
       console.log('socketRegister in login')
       this.props.socketRegister(this.props._id)
     }
-    console.log('login in render')
+    // console.log('login in render')
     return (
       <div>
         {this.props.redirect && <Redirect to={this.props.redirect}></Redirect>}

@@ -1,6 +1,6 @@
 import axios from 'axios'
 //use store to dispach the action to change loaderActive , because there is no component
-import {store} from './index'
+import {store} from './store'
 import { toggle } from './redux/loader.redux'
 axios.interceptors.request.use(function(config){
 	store.dispatch(toggle(true))

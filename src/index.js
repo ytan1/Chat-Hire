@@ -1,9 +1,9 @@
-import { createStore, applyMiddleware,compose } from 'redux'
+
 import React from 'react'
 import ReactDom from 'react-dom'
-import thunk from 'redux-thunk'
+
 import { Provider } from 'react-redux'
-import { BrowserRouter, Route, Switch } from 'react-router-dom'
+import { BrowserRouter } from 'react-router-dom'
 import './main.css'
 import './reactTransitionGroup.css'
 
@@ -12,27 +12,11 @@ import './reactTransitionGroup.css'
 import './config'
 import { LoaderCon } from './loader'
 import 'semantic-ui-css/semantic.min.css'
-//for login component
-import Login from './components/login'
-import Register from './components/register'
-import AuthRoute from './components/authroute/AuthRoute'
-import Bossinfo from './containers/Bossinfo/Bossinfo'
-import Employeeinfo from './containers/Employeeinfo/Employeeinfo'
-import Dashboard from './containers/Dashboard/Dashboard'
-import Chatting from './containers/Chatting/Chatting'
+
+import { store } from './store'
+import App from './App'
 
 
-
-
-
-//import reducers
-import {reducer} from './redux/reducer'
-//create store and use devTool for redux
-export const store = createStore(reducer, compose(
-	applyMiddleware(thunk),
-	window.devToolsExtension ? window.devToolsExtension() : f => f
-	)
-)
 
 function render(){
 	ReactDom.render(
@@ -41,22 +25,7 @@ function render(){
 
 				<BrowserRouter>
 
-					<div className="container">
-						<AuthRoute />
-						
-								<Switch>
-									
-									<Route path="/login" component={Login}></Route>
-									<Route path="/register" component={Register}></Route>
-									<Route path="/bossinfo" component={Bossinfo}></Route>
-									<Route path="/employeeinfo" component={Employeeinfo}></Route>
-									<Route path="/chatting/:userid" component={Chatting}></Route>
-									<Route component={Dashboard}></Route>
-									
-								</Switch>
-					
-	
-					</div>
+					<App />
 
 				</BrowserRouter>
 				<LoaderCon />

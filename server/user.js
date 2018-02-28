@@ -69,14 +69,14 @@ Router.post('/register', function(req, res){
 })
 
 Router.post('/login', function(req, res){
-	console.log(req.body)
+
 	const {user, pwd} = req.body.data
 	User.findOne({user}, function(err, doc){
 		if (err){
 			return res.json({code: 1, msg:"Error from database3!"})
 		}else{
 			if(doc){
-				console.log(doc)
+				// console.log(doc)
 				bcrypt.compare(pwd, doc.pwd)
 					.then((resBcrypt) => {
 						if(resBcrypt){

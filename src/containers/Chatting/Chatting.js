@@ -11,7 +11,7 @@ import { TransitionGroup, CSSTransition } from 'react-transition-group'
 //use reselect to memoize calculations via state  
 import isEqual from 'lodash/isEqual'
 import { createSelectorCreator, defaultMemoize } from 'reselect'
-import { store } from '../../index'
+import { store } from '../../store'
 const createDeepEqualSelector = createSelectorCreator(
 	defaultMemoize,
 	isEqual

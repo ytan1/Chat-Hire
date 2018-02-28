@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom'
 import { Card, Image } from 'semantic-ui-react'
 import {updatePersonList} from '../../redux/userlist.redux'
 import { createSelector } from 'reselect'
-import { store } from '../../index'
+import { store } from '../../store'
 // const a = {x:1}, b={x:1}
 // console.log(isEqual(a,b))
 // const createDeepEqualSelector = createSelectorCreator(
@@ -141,7 +141,7 @@ export default class MessageCenter extends React.Component {
 	      				<Card.Content>
 	      					<Image floated='left' size='mini' src={`/pics/${v.picName}`} />
 	      					<Card.Header>{v.user}</Card.Header>
-	      					<Card.Meta>{v.time}</Card.Meta>
+	      					<Card.Meta>{'' + new Date(v.time).toLocaleString()}</Card.Meta>
                             <Card.Description>{v.text}<span className='unread'>{v.unreadCount}</span></Card.Description>
 	      				</Card.Content>
 	      			</Card>

@@ -2,10 +2,32 @@ const express = require('express')
 const app = express()
 const http = require('http').Server(app)
 const io = require('socket.io')(http)
+const path = require('path')
 
 const models = require('./model')
 const chat = models.getModel('chat')
+//for SSR
+import staticPath from '../build/asset-manifest.json'
+import { renderToString } from 'react-dom/server'
+import csshook from 'css-modules-require-hook/preset' 
+import assethook from 'asset-require-hook'
+assethook({
+  extensions: ['png'],
+  name: '[hash].[ext]',
+  publicPath: '/'
+})
 
+import React from 'react'
+import { createStore, applyMiddleware, compose } from 'redux'
+import { StaticRouter } from 'react-router-dom'
+import thunk from 'redux-thunk'
+import { Provider } from 'react-redux'
+import App from '../src/App.js'
+//for loader icon
+import '../src/config'
+import { LoaderCon } from '../src/loader'
+//import reducers for server side render
+import {reducer} from '../src/redux/reducer'
 
 
 
@@ -22,8 +44,9 @@ const cookieparser = require('cookie-parser')
 app.use(cookieparser())
 app.use(bodyparser.json())
 
-app.use('/pics',express.static('./pics'))
-app.use('/cv', express.static('./CV'))
+//run nodemon server/server.js
+app.use('/pics',express.static(path.resolve('server/pics')))
+app.use('/cv', express.static(path.resolve('server/CV')))
 
 // app.use(function(req, res, next) {
 //   res.header("Access-Control-Allow-Origin", "*");
@@ -109,6 +132,61 @@ io.on('connection', function(socket){
 // 	})
 // })
 
+
+
+app.use(function(req, res, next){
+	if(req.url.startsWith('/user/')||req.url.startsWith('/static/')||req.url.startsWith('/pics/')||req.url.startsWith('/cv/')||req.url.startsWith('/debug/')){
+		return next()
+	}else{
+		const store = createStore(reducer, compose(
+			applyMiddleware(thunk)
+			)
+		)
+		let context = {}
+		const markup = renderToString(
+			<Provider store={store}>
+				<div className="container">
+
+					<StaticRouter
+						location={req.url}
+						context={context}
+					>
+						
+						<App />
+						
+
+					</StaticRouter>
+					<LoaderCon />
+				</div>
+				
+			</Provider>
+		)
+		const htmlPage = `<!DOCTYPE html>
+							<html lang="en">
+							  <head>
+							    <meta charset="utf-8">
+							    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+							    <meta name="theme-color" content="#000000">
+
+							    <link rel="manifest" href="%PUBLIC_URL%/manifest.json">
+							    <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico">
+							    <link rel="stylesheet" href="/${staticPath['main.css']}">
+							    <title>React App</title>
+							  </head>
+							  <body>
+							    <noscript>
+							      You need to enable JavaScript to run this app.
+							    </noscript>
+							    <div id="root" style="height:100%">${markup}</div>
+							    <script src="/${staticPath['main.js']}"></script>
+							  </body>
+							</html>`
+
+		res.send(htmlPage)
+	}
+
+})
+app.use('/', express.static(path.resolve('build')))
 //port
 const PORT = 3030
 http.listen(PORT, function(){
