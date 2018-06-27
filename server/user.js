@@ -90,6 +90,7 @@ Router.post('/login', function(req, res){
 						}
 					},(err) => {
 						console.log(err)
+						return res.json({code: 1, msg:err})
 					})
 			}else {
 			return res.json({code: 1, msg:"User not exists!"})

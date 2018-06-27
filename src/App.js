@@ -16,10 +16,21 @@ import Chatting from './containers/Chatting/Chatting'
 
 
 
-
  export default class App extends React.Component{
+ 	constructor(props){
+ 		super(props)
+ 		this.state={
+ 			hasError:false
+ 		}
+ 	}
+ 	componentDidCatch(err, info){
+ 		console.log(err, info)
+ 		this.setState({
+ 			hasError:true
+ 		})
+ 	}
 	render(){
-		return (
+		return this.state.hasError ? <h2 style={{textAlign: 'center'}}>{'404 :('}</h2> : (
 			<div className="container">
 				<AuthRoute />
 				

@@ -19,7 +19,7 @@ import App from './App'
 
 
 function render(){
-	ReactDom.render(
+	ReactDom.hydrate(
 		(<Provider store={store}>
 			<div className="container">
 
