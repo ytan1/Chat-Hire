@@ -109,7 +109,7 @@ export default class Dashboard extends React.Component {
 	}
 	
 
-  	const pageList = this.Constant.pageList.filter( v => v.type.includes(this.props.type) )
+  	const pageList = this.Constant.pageList.filter( v => v.type.indexOf(this.props.type) > -1 )
   	console.log(pageList)
   	const currentPage =  pageList.find(v => (v.path===pathname))
   	//if the pathname doesn't match any

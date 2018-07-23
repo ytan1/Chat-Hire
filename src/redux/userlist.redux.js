@@ -23,13 +23,13 @@ const updateSuccess = (data) => {
 export const updatePersonList = (usertype) => {
 	return dispath => {
 		const type = usertype==='Boss' ? 'Employee' : 'Boss'
-		axios.get(`/user/userlist?type=${type}`)
-			.then(res => {
-				if(res.status===200){
-					dispath(updateSuccess(res.data.data))
-				}else{
-					console.log(res.status)
-				}
-			}, err => {console.log(err)})
+		const request = axios.get(`/user/userlist?type=${type}`)
+		return 	request.then(res => {
+					if(res.status===200){
+						dispath(updateSuccess(res.data.data))
+					}else{
+						console.log(res.status)
+					}
+				}, err => {console.log(err)})
 	}
 }

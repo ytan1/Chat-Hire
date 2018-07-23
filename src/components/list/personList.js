@@ -14,7 +14,7 @@ export default class PersonList extends React.Component {
 
 
 
-  componentWillMount(){	
+  componentDidMount(){	
 
   	//requesting users' data from redux axios to this.props.userlist
   	this.props.updatePersonList(this.props.type)
@@ -49,7 +49,7 @@ export default class PersonList extends React.Component {
 				      			    <Card.Description>{v.more}</Card.Description>
 				      			</Card.Content>
 				      			<Card.Content extra>
-				      				{v.CVName ? (<a href={`http://192.168.0.22:3030/cv/${v.CVName}`} download >{`${v.user}'s CV`}</a>) : null}
+				      				{v.CVName ? (<a href={`http://192.168.56.1:3030/cv/${v.CVName}`} download >{`${v.user}'s CV`}</a>) : null}
 				      			</Card.Content>
 	      					</Card>)}
       		)}

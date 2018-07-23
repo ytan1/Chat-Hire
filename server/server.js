@@ -45,14 +45,14 @@ app.use(cookieparser())
 app.use(bodyparser.json())
 
 //run nodemon server/server.js
-app.use('/pics',express.static(path.resolve('server/pics')))
-app.use('/cv', express.static(path.resolve('server/CV')))
+app.use('/pics/',express.static(path.resolve('pics')))
+app.use('/cv/', express.static(path.resolve('CV')))
 
-// app.use(function(req, res, next) {
-//   res.header("Access-Control-Allow-Origin", "*");
-//   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-//   next();
-// });
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
 
 const userRouter = require('./user')
 app.use('/user', userRouter)
@@ -61,7 +61,7 @@ app.use('/user', userRouter)
 
 let socketId = {}
 io.on('connection', function(socket){
-	console.log('one user connected')
+	console.log('one user connected', socket.id)
 	socket.on('sendMsg', function(data){
 		console.log('send Msg')
 		const { from, text, to } = data
@@ -84,8 +84,10 @@ io.on('connection', function(socket){
 				chat.findOneAndUpdate({chatId}, {msgList: doc.msgList}, {new: true}, function(err,doc3){
 					if (err) { console.log(err) }
 					else { 
-	
-						io.to(socketId[to]).emit('findRecv', data)
+						if(socketId[to]){
+							io.to(socketId[to]).emit('findRecv', data)
+						}
+						
 						socket.emit('msgFromSelf', data)
 					}
 				})
@@ -181,7 +183,7 @@ app.use(function(req, res, next){
 							    <script src="/${staticPath['main.js']}"></script>
 							  </body>
 							</html>`
-
+		console.log('server rinder done')
 		res.send(htmlPage)
 	}
 

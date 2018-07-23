@@ -329,6 +329,13 @@ module.exports = {
     // https://github.com/jmblog/how-to-optimize-momentjs-with-webpack
     // You can remove this if you don't use Moment.js:
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+    //From Yang: this is a hack for window is not defined in server side rendering
+    //https://stackoverflow.com/questions/38951721/react-js-server-side-issue-window-not-found
+    new webpack.DefinePlugin({
+      // 'process.env.NODE_ENV': isDevelopment ? '"development"' : '"production"',
+      'process.env.BROWSER': JSON.stringify(true)
+      // __DEV__: isDevelopment
+    }),
   ],
   // Some libraries import Node modules but don't use them in the browser.
   // Tell Webpack to provide empty mocks for them so importing them works.
