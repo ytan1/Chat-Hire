@@ -114,7 +114,7 @@ app.use(function(req, res, next){
         })
         request.then(resAxios => {
             if(resAxios.status === 200 && resAxios.data.code === 0){
-                if(resAxios.data){
+                if(resAxios.data.data){
                     const result = resAxios.data.data
                     console.log(result)
                     store.dispatch(recvList(result.chatInfo, result.userInfo._id))
@@ -125,8 +125,12 @@ app.use(function(req, res, next){
                 console.log('fetch data before rendering failed 1')
                 console.log(resAxios)
             }
-
-            res.send(renderContent(store, req, context))
+            const content = renderContent(store, req, context)
+            //for <Redirect />   not necessary because <AuthRoute /> use this.props.history.push
+            // if(context.url){
+            //     return res.redirect(301, context.url)
+            // }
+            res.send(content)
 
         }, err => {
             console.log('fetch data before rendering failed 2')
