@@ -8,6 +8,7 @@ const Router = express.Router()
 //for mongoose models
 const models = require('./model')
 const User = models.getModel('user')
+const chat = models.getModel('chat')
 // const chat = models.getModel('chat')
 // Router.get('/debug', function(req, res){
 // 	chat.remove({'chatId':"5a7a68cd0c4a26924cdc2ba2_5a7a68cd0c4a26924cdc2ba2"}, function(err,doc){
@@ -230,6 +231,7 @@ Router.get('/info', function(req, res){
 		User.findById(userid, {'pwd':0, '__v':0}, function(err, doc){  //a filter not to show pwd and _v
 			if(err){
 				console.log(err)
+				res.json({code:1})
 			}
 			else{
 				if(doc){
@@ -244,5 +246,53 @@ Router.get('/info', function(req, res){
 		res.json({code: 1})
 	}
 })
+//this is for sending data to the renderer server before it render the html to the browser
+Router.post('/renderer', function(req, res){
+	const {userid} = req.body.data
+	if(!userid){
+		//no cookie info, return code:1 to the renderer
+		res.json({code: 0})
+	}else{
+		User.findById(userid, {'pwd':0, '__v':0}, function(err, doc){
+			if(err){
+				console.log(err)
+				res.json({code:1})
+			}
+			else{
+				if(doc){
+					//if the user exist, get chat info and userlist
+					let data = {}
 
+					data.userInfo = doc
+
+					// recursive data query!!
+					//first get the usr list
+					const queryType = (doc.type === 'Boss') ? 'Employee' : 'Boss'
+					User.find({type: queryType}, {'pwd':0}, function(err, usrListDoc){
+						if(err){
+							console.log(err)
+							data.usrListInfo = null
+						}
+						data.usrListInfo = usrListDoc 
+						//if get usr list success, then get the chat info
+						chat.find({$or:[{'msgList.from': userid}, {'msgList.to': userid}]}, function(err, chatDoc){
+							 if(err) { 
+							 	console.log(err) 
+							 	data.chatInfo = null
+							 }
+							 data.chatInfo = chatDoc
+							 res.json({code:0, data: data})
+						})
+						
+					})
+
+					
+				}else{
+					res.json({code:1})
+				}
+			}
+		})
+	}
+	
+})
 module.exports = Router

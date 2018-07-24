@@ -1,5 +1,5 @@
 
-import axios from 'axios'
+// import axios from 'axios' use customized axios for proxy from store.js
 const UPDATE_SUCCESS = 'update-success'
 
 
@@ -12,7 +12,7 @@ export const userlist = (state=[], action) =>{
 	}
 }
 
-const updateSuccess = (data) => {
+export const updateSuccess = (data) => {
 	return {
 		type: UPDATE_SUCCESS,
 		payload: data
@@ -21,7 +21,7 @@ const updateSuccess = (data) => {
 
 
 export const updatePersonList = (usertype) => {
-	return dispath => {
+	return (dispath,getState, axios) => {
 		const type = usertype==='Boss' ? 'Employee' : 'Boss'
 		const request = axios.get(`/user/userlist?type=${type}`)
 		return 	request.then(res => {

@@ -1,9 +1,20 @@
 import { createStore, applyMiddleware,compose } from 'redux'
 import thunk from 'redux-thunk'
+import axios from 'axios'
 //import reducers
-import {reducer} from './redux/reducer'
-export const store = createStore(reducer, compose(
-    applyMiddleware(thunk)
-    // (window && window.devToolsExtension) ? window.devToolsExtension() : f => f     //store appears in MessageCenter.js causing crach in server when SSR
+import {reducer} from '../../src/redux/reducer'
+
+
+export default (req) => {
+    const axiosInstance = axios.create({
+        baseURL: 'http://localhost:3030/',   //url of api server
+        headers: {
+            cookies: req.cookies || ''
+        }
+    })
+    const store = createStore(reducer, {}, compose(
+        applyMiddleware(thunk.withExtraArgument(axiosInstance))
+        )
     )
-)
+    return store
+}

@@ -21,7 +21,7 @@ export default class AuthRoute extends React.Component{
 
 		
 		//check if there's cookie in response in backend server , process in Router.get('/info',...)
-		axios.get('/user/info')
+		axios.get('/api/user/info')
 			.then((res) => {
 				if(res.status === 200){
 					console.log(res.data)

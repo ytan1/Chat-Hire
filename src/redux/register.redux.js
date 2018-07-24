@@ -1,4 +1,4 @@
-import axios from 'axios'
+// import axios from 'axios'     use the customised axiox instance from store.js
 import { getRedirect } from '../util.js'
 const LOGIN_ERROR = 'login-error'
 const LOGIN_SUCCESS = 'login-success'
@@ -30,26 +30,26 @@ export const auth = (state=initState, action) =>{
 }
 
 export const loginInfo = (info) => {
-	return (dispatch) => {
+	return (dispatch, getState, axios) => {
 		let { user, pwd } = info
 		if(!user || !pwd) {
 			dispatch(loginError({msg: "Info not completed", errorPage: 'login'}))
 		}else{
-			axios.post('user/login', {data: info})
-				.then(res => {
+			const request = axios.post('user/login', {data: info})
+			return  request.then(res => {
 					if(res.status===200 && res.data.code === 0){
 						dispatch(loginSuccess(res.data.data))
 					}
 					else{
 						dispatch(loginError({msg: res.data.msg, errorPage: 'login'}))
 					}
-				})
+				}, err => {console.log(err)})
 		}
 	}
 }
 
 export const storePic = (info) => {
-	return (dispatch) => {
+	return (dispatch, getState, axios) => {
 		let { user, type, file, picName, company, title, more, education, CV } = info
 		let picData = new FormData(), CVData = new FormData()
 
@@ -96,18 +96,18 @@ export const storePic = (info) => {
 		let axiosArr = [passPicData(), passData()]
 		if(CV) {axiosArr.push(passCVData())}
 
-		Promise.all(axiosArr)
-			.then((res) => {
-				console.log(res[2])
-				if(res[0].data.code === 0 && res[1].data.code === 0 && (res[2]?res[2].data.code===0:true)){
+		const promises = Promise.all(axiosArr)
+		return	promises.then((res) => {
+					console.log(res[2])
+					if(res[0].data.code === 0 && res[1].data.code === 0 && (res[2]?res[2].data.code===0:true)){
 
-					dispatch(updateUserInfo({...info, CVName}))
-				}else{
-					dispatch(loginError({msg: "Error when store pic and other info!", errorPage: 'info'}))
-				}
-			}, err => {
-				console.log(err)
-			})
+						dispatch(updateUserInfo({...info, CVName}))
+					}else{
+						dispatch(loginError({msg: "Error when store pic and other info!", errorPage: 'info'}))
+					}
+				}, err => {
+					console.log(err)
+				})
 	}
 }
 
@@ -136,7 +136,7 @@ const loginSuccess = (data) => {
 
 export const registerInfo = ({user, pwd, repeatPwd, type}) =>{
 
-	return (dispatch) => {
+	return (dispatch, getState, axios) => {
 		//if validate info
 		if(!user || !pwd || !repeatPwd){
 			dispatch(loginError({msg: "Info not completed!", errorPage: 'register'}))
@@ -151,17 +151,17 @@ export const registerInfo = ({user, pwd, repeatPwd, type}) =>{
 			dispatch(loginError({msg: "Password should be more complex! Please include number, lowercase & uppercase...",  errorPage: 'register'}))
 		}else{
 			//pass info to server localhost:3030/user/info
-			axios.post('/user/register',
-					{data: {user, pwd, type}}
-				)
-			.then((res) => {
-				if(res.status===200 && res.data.code===0){
-					dispatch(loginSuccess({...res.data.data, pwd:''}))
-				}
-				else{
-					dispatch(loginError({msg: res.data.msg, errorPage: 'register'}))
-				}
-			})
+			const request = axios.post('/user/register',
+								{data: {user, pwd, type}}
+							)
+			return request.then((res) => {
+						if(res.status===200 && res.data.code===0){
+							dispatch(loginSuccess({...res.data.data, pwd:''}))
+						}
+						else{
+							dispatch(loginError({msg: res.data.msg, errorPage: 'register'}))
+						}
+					})
 		}
 		
 	}

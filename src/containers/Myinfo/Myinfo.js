@@ -49,7 +49,7 @@ export default class Myinfo extends React.Component {
   }
 
   render() {
-  	const title = this.props.type==='Boss'?`Looking for ${this.props.title}`:null
+  	const title = this.props.type==='Boss'?`${this.props.title}`:null
 
 
     return (
@@ -64,7 +64,7 @@ export default class Myinfo extends React.Component {
       			
       		</Card.Content>
       		<Card.Content extra>
-      			{this.props.CVName ? <a href={`http://192.168.56.1:3030/cv/${this.props.CVName}`} download >My CV</a> : null }
+      			{this.props.CVName ? <a href={`http://192.168.56.1:4000/cv/${this.props.CVName}`} download >My CV</a> : null }
       		</Card.Content>
 
       	</Card>

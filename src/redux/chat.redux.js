@@ -55,6 +55,8 @@ export const chat = (state=initState, action) => {
 			
 		case RECV_LIST:
 			//convert the msgList from db to the msgList structure in the redux state
+			//structure of db {chatId: ...., msgList:[...]} for one doc
+			//structure of redux state.chat {[chatId:..., from:..., to:..., text:...]} for one doc
 			let list = []
 			action.payload.forEach(v => {
 				let subList = v.msgList.map(v2 => {
@@ -135,7 +137,7 @@ const recvMsgFromSelf = (data) => {
 	}
 }
 
-const recvList = (data, myId) => {
+export const recvList = (data, myId) => {
 	return {
 		type: RECV_LIST,
 		payload: data,
