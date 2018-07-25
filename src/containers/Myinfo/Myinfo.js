@@ -64,7 +64,7 @@ export default class Myinfo extends React.Component {
       			
       		</Card.Content>
       		<Card.Content extra>
-      			{this.props.CVName ? <a href={`http://192.168.56.1:4000/cv/${this.props.CVName}`} download >My CV</a> : null }
+      			{this.props.CVName ? <a href={`http://35.183.99.224:4000/cv/${this.props.CVName}`} download >My CV</a> : null }
       		</Card.Content>
 
       	</Card>
