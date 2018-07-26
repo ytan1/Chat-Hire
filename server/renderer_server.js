@@ -50,7 +50,7 @@ app.use('/cv/', express.static(path.resolve('CV')))
 
 
 
-//proxy to api server
+//proxy to api server, hack to express-http-proxy not supporting the multipart data
 const isMultipartRequest = function (req) {
   let contentTypeHeader = req.headers['content-type'];
   return contentTypeHeader && contentTypeHeader.indexOf('multipart') > -1;
@@ -159,9 +159,9 @@ app.use(function(req, res, next){
             }
             const content = renderContent(store, req, context)
             //for <Redirect />   not necessary because <AuthRoute /> use this.props.history.push
-            // if(context.url){
-            //     return res.redirect(301, context.url)
-            // }
+            if(context.url){
+                return res.redirect(301, context.url)
+            }
             res.send(content)
 
         }, err => {

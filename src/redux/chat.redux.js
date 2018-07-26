@@ -1,5 +1,9 @@
 
 import io from 'socket.io-client'
+//should change if run on local;
+// connect directly to the API server 
+//should use proxy or not (http-proxy-middleware)
+//???????
 export const socket = io('ws://35.183.99.224:3030')
 
 

@@ -1,25 +1,25 @@
 import React from 'react'
 import axios from 'axios'
-import { withRouter } from 'react-router-dom'
+import { withRouter, Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { updateUserInfo } from '../../redux/register.redux'
 import { socketRegister } from '../../redux/chat.redux'
 
 @withRouter
 @connect(
-	null,
+	state => state.auth,
 	{updateUserInfo, socketRegister}
 	)
 export default class AuthRoute extends React.Component{
 	componentDidMount(){
-		
-		const pathname = this.props.history.location.pathname
-		const pathList = ['/login', '/register']
-		if(pathList.indexOf(pathname) > -1){
-			return null
-		}
+		//not necessary do it in render instead
+		// const pathname = this.props.history.location.pathname
+		// const pathList = ['/login', '/register']
+		// if(pathList.indexOf(pathname) > -1){
+		// 	return null
+		// }
 
-		
+		// still necessary for browser hydrate store state
 		//check if there's cookie in response in backend server , process in Router.get('/info',...)
 		axios.get('/api/user/info')
 			.then((res) => {
@@ -41,6 +41,15 @@ export default class AuthRoute extends React.Component{
 			})
 	}	
 	render(){
-		return <div></div>
+		const pathname = this.props.history.location.pathname
+		const pathList = ['/login', '/register']
+		if(pathList.indexOf(pathname) > -1){
+			return <div></div>
+		}
+		let redirect = null
+		if(!this.props.user){
+			redirect = <Redirect to="/login" />
+		}
+		return <div>{redirect}</div>
 	}
 }
