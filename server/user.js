@@ -102,9 +102,13 @@ Router.post('/login', function(req, res){
 })
 //store the pic in local disk path by server.js
 const storagePic = multer.diskStorage({
-	destination: './pics/',
+	destination: function (req, file, cb) {
+                cb(null, './pics/')
+         },
 	filename: function(req, file, cb){
 		//pic is stored in ./pic relative to server.js' path, name is ...png
+		//console.log('file is ', file)
+                //console.log('req.body ', req.body) 
 		cb(null, req.body.filename)
 	}
 })
@@ -118,7 +122,7 @@ Router.post('/bossinfo/pic', uploadPic.single('file'), function(req, res){
 	const pic = req.file
 	const name = req.body.filename
 	const user = req.body.user
-	// console.log(req)
+
 
 	if(pic){
 		User.findOneAndUpdate({user}, {picName: name}, {new: false}, function(err, doc){
@@ -155,7 +159,6 @@ Router.post('/employeeinfo/pic', uploadPic.single('file'), function(req, res){
 	const pic = req.file
 	const name = req.body.filename
 	const user = req.body.user
-	// console.log(req)
 
 	if(pic){
 		User.findOneAndUpdate({user}, {picName: name}, {new: false}, function(err, doc){
@@ -165,6 +168,7 @@ Router.post('/employeeinfo/pic', uploadPic.single('file'), function(req, res){
 			}else if(!doc){
 				return res.json({code: 1 })
 			}else{
+				console.log('pic upload success')
 				return res.json({code: 0 })
 			}
 		})
@@ -172,7 +176,9 @@ Router.post('/employeeinfo/pic', uploadPic.single('file'), function(req, res){
 })
 
 const storageCV = multer.diskStorage({
-	destination: './CV/',
+	 destination: function (req, file, cb) {
+                cb(null, './CV/')
+         },
 	filename: function(req, file, cb){ 
 		
 		cb(null, req.body.filename)

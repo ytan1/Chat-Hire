@@ -43,7 +43,7 @@ const cookieparser = require('cookie-parser')
 
 //use the middleware to process data
 app.use(cookieparser())
-app.use(bodyparser.json())
+//app.use(bodyparser.json())
 //run nodemon server/server.js server static files
 app.use('/pics/',express.static(path.resolve('pics')))
 app.use('/cv/', express.static(path.resolve('CV')))
@@ -51,9 +51,41 @@ app.use('/cv/', express.static(path.resolve('CV')))
 
 
 //proxy to api server
+const isMultipartRequest = function (req) {
+  let contentTypeHeader = req.headers['content-type'];
+  return contentTypeHeader && contentTypeHeader.indexOf('multipart') > -1;
+}
+const bodyParserJsonMiddleware = function () {
+  return function (req, res, next) {
+    if (isMultipartRequest(req)) {
+      return next()
+    }
+    return bodyparser.json()(req, res, next)
+  }
+}
+app.use(bodyParserJsonMiddleware())
+const proxyMiddleware = function () {
+  return function (req, res, next) {
+    let reqAsBuffer = false
+    let reqBodyEncoding = true
+    let parseReqBody = true
+    let contentTypeHeader = req.headers['content-type']
+    if (isMultipartRequest(req)) {
+      reqAsBuffer = true
+      reqBodyEncoding = null
+      parseReqBody = false
+    }
+    return proxy('http://localhost:3030/', {
+      reqAsBuffer,
+      reqBodyEncoding,
+      parseReqBody,
+      timeout: 0
+    })(req, res, next)
+  }
+}
 app.use(
     '/api',
-    proxy('http://localhost:3030/')
+    proxyMiddleware()
 )
 
 const renderContent = (store, req, context) => {
