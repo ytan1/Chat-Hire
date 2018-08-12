@@ -9,12 +9,13 @@ const proxy = require('express-http-proxy')
 import staticPath from '../build/asset-manifest.json'
 import { renderToString } from 'react-dom/server'
 import csshook from 'css-modules-require-hook/preset' 
-import assethook from 'asset-require-hook'
-assethook({
-  extensions: ['png'],
-  name: '[hash].[ext]',
-  publicPath: '/'
-})
+//for support pic file in server side , not necessary because this app doesn't have local pic files
+// import assethook from 'asset-require-hook'
+// assethook({
+//   extensions: ['png'],
+//   name: '[hash].[ext]',
+//   publicPath: '/'
+// })
 
 import React from 'react'
 import { applyMiddleware, compose } from 'redux'
