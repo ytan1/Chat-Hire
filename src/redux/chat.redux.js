@@ -4,7 +4,7 @@ import io from 'socket.io-client'
 // connect directly to the API server 
 //should use proxy or not (http-proxy-middleware)
 //???????
-export const socket = io('ws://35.183.99.224:3030')
+export const socket = io('ws://35.182.252.61:3030')
 
 
 const RECV_MSG = 'recv-msg'
